@@ -1,8 +1,11 @@
 # getEmoji
 
-## Run locally
+## Deploy to Heroku
 
 ```sh
 docker build -t getemoji .
-docker run --rm -it -p 8080:80 --name getemoji getemoji
+# verify it works:
+docker run --rm -it -e PORT=5000 -p 5000:5000 --name getemoji getemoji
+heroku container:push getemoji
+heroku container:release getemoji
 ```
