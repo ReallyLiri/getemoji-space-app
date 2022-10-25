@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using GetEmoji.DB;
 using GetEmoji.Extensions;
 using GetEmoji.Models;
 using GetEmoji.Models.Attributes;

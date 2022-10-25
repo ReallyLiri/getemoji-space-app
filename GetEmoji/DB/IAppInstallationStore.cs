@@ -1,6 +1,4 @@
-using GetEmoji.Models;
-
-namespace GetEmoji.Services.Space;
+namespace GetEmoji.DB;
 
 public interface IAppInstallationStore
 {
