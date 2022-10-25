@@ -49,9 +49,10 @@ public static class ServiceRegistration
 
     private static string GetConnectionString()
     {
-        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Production")
+        var connectionSting = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+        if (!string.IsNullOrEmpty(connectionSting))
         {
-            return Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            return connectionSting;
         }
 
         var m = Regex.Match(Environment.GetEnvironmentVariable("DATABASE_URL")!, @"postgres://(.*):(.*)@(.*):(.*)/(.*)");
