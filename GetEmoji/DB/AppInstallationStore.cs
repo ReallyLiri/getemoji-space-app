@@ -14,7 +14,7 @@ public class AppInstallationStore : IAppInstallationStore
     public async Task RegisterAppInstallationAsync(AppInstallation appInstallation)
     {
         await using var appContext = await _appContextFactory.CreateDbContextAsync();
-        await appContext.AddAsync(appInstallation);
+        await appContext.UpsertAsync(appInstallation);
     }
 
     public async Task<AppInstallation> GetAppInstallationAsync(string clientId)

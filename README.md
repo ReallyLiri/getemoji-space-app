@@ -1,5 +1,21 @@
 # getEmoji
 
+![logo](https://i.imgur.com/gnZgeLs.png)
+
+Search and immediately add emoji to your JetBrains Space chats!
+
+Powered by [slackmojis](https://slackmojis.com)
+
+![commands](https://i.imgur.com/EwPgByj.png)
+
+![gif](https://i.imgur.com/M2ahQzk.gif)
+
+## Debug locally
+
+Copy [GetEmoji/Properties/launchSettings.template.json](GetEmoji/Properties/launchSettings.template.json) to `GetEmoji/Properties/launchSettings.json` and fill in the missing app installation details.
+
+Use `ngrok` to communicate between Space and your server.
+
 ## Run DB locally
 
 Deployed app uses Heroku Postgres. To achieve same functionality locally we can use docker:
@@ -14,7 +30,7 @@ docker run --restart unless-stopped -d \
   postgres:latest
 ```
 
-## Run Docker locally
+## Run server with Docker
 
 ```sh
 docker build -t getemoji .

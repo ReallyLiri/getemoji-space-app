@@ -22,24 +22,26 @@ public class GetEmojiAppContext : DbContext
         await Database.EnsureCreatedAsync();
 
         var clientId = configuration.GetValue<string>("CLIENT_ID");
-        if (!string.IsNullOrEmpty(clientId) && await GetAsync(clientId) is null)
+        if (string.IsNullOrEmpty(clientId))
         {
-            var appInstallation = new AppInstallation(
-                configuration.GetValue<string>("SERVER_URL"),
-                clientId,
-                configuration.GetValue<string>("CLIENT_SECRET")
-            );
-            await AddAsync(appInstallation);
-            _logger.LogInformation($"Created record for client-id '{clientId}'");
+            return;
         }
+
+        var appInstallation = new AppInstallation(
+            configuration.GetValue<string>("SERVER_URL"),
+            clientId,
+            configuration.GetValue<string>("CLIENT_SECRET")
+        );
+        await UpsertAsync(appInstallation);
     }
 
     public async Task<AppInstallation> GetAsync(string clientId)
         => await AppInstallations.FirstOrDefaultAsync(_ => _.ClientId == clientId);
 
-    public async Task AddAsync(AppInstallation appInstallation)
+    public async Task UpsertAsync(AppInstallation appInstallation)
     {
-        await AppInstallations.AddAsync(appInstallation);
+        _logger.LogInformation($"Upserting {nameof(AppInstallation)}: {appInstallation}");
+        await AppInstallations.Upsert(appInstallation).RunAsync();
         await SaveChangesAsync();
     }
 }

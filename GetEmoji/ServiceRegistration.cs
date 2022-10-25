@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
 using GetEmoji.DB;
 using GetEmoji.Handlers;
-using GetEmoji.Models;
 using GetEmoji.Services.Emoji;
 using GetEmoji.Services.Space;
 using JetBrains.Space.Common;

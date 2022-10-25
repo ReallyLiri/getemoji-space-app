@@ -8,4 +8,10 @@ public record AppInstallation(
     string ServerUrl,
     [property: Key] string ClientId,
     string ClientSecret
-);
+)
+{
+    public override string ToString()
+    {
+        return $"ClientId={ClientId};ServerUrl={ServerUrl}";
+    }
+}
