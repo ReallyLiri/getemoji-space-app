@@ -14,7 +14,22 @@ Powered by [slackmojis](https://slackmojis.com)
 
 Copy [GetEmoji/Properties/launchSettings.template.json](GetEmoji/Properties/launchSettings.template.json) to `GetEmoji/Properties/launchSettings.json` and fill in the missing app installation details.
 
-Use `ngrok` to communicate between Space and your server.
+Use `ngrok` to communicate between Space and your server, use the endpoint `https://<ngrok>/api/space`.
+
+## Install to Space
+
+### Install manually
+
+Grant `Add custom emoji, View custom emoji` permissions in the **Global Authorization** settings.
+
+### Install from link
+
+Open your browser to
+
+```sh
+BASE_URL="https://<ngrok>"
+https://jetbrains.com/space/app/install-app?name=getEmoji&endpoint=$BASE_URL/api/space
+```
 
 ## Run DB locally
 

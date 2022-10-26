@@ -15,7 +15,6 @@ public static class ServiceRegistration
     {
         builder.Services.AddHttpClient();
 
-        builder.Services.AddSingleton<IAppInstallationStore, AppInstallationStore>();
         builder.Services.AddSingleton<ISpaceClientProvider, SpaceClientProvider>();
 
         builder.Services.AddSingleton<Func<AppInstallation, Connection>>(
@@ -39,8 +38,11 @@ public static class ServiceRegistration
 
         builder.Services.AddSingleton<ISpaceEmojiCreateService, SpaceEmojiCreateService>();
 
+        builder.Services.AddSingleton<IPermissionRequestService, PermissionRequestService>();
+        
         builder.Services.AddSpaceWebHookHandler<WebhookHandler>();
 
+        builder.Services.AddSingleton<IAppInstallationStore, AppInstallationStore>();
         builder.Services.AddDbContextFactory<GetEmojiAppContext>(options => options.UseNpgsql(GetConnectionString()));
 
         return builder;

@@ -1,5 +1,4 @@
 using GetEmoji.DB;
-using GetEmoji.Models;
 using JetBrains.Space.Client;
 using JetBrains.Space.Common;
 
@@ -21,6 +20,8 @@ public class SpaceClientProvider : ISpaceClientProvider
     public async Task<EmojiClient> GetEmojiClientAsync(string clientId) => new(await GetConnectionAsync(clientId));
 
     public async Task<ChatClient> GetChatClientAsync(string clientId) => new(await GetConnectionAsync(clientId));
+
+    public async Task<ApplicationClient> GetApplicationClientAsync(string clientId) => new(await GetConnectionAsync(clientId));
 
     private async Task<Connection> GetConnectionAsync(string clientId)
         => _connectionBuilder(await _appInstallationStore.GetAppInstallationAsync(clientId));

@@ -20,6 +20,7 @@ public class WebhookHandler : SpaceWebHookHandler
     private readonly IChatMessageService _chatMessageService;
     private readonly IEmojiSearchService _emojiSearchService;
     private readonly ISpaceEmojiCreateService _spaceEmojiCreateService;
+    private readonly IPermissionRequestService _permissionRequestService;
 
     private static readonly string SearchCommandPrefix = EmojiCommands.Search.GetText<CommandNameAttribute>(_ => _.Name);
     private static readonly string RandomCommandPrefix = EmojiCommands.GetRandom.GetText<CommandNameAttribute>(_ => _.Name);
@@ -29,7 +30,8 @@ public class WebhookHandler : SpaceWebHookHandler
         IAppInstallationStore appInstallationStore,
         IChatMessageService chatMessageService,
         IEmojiSearchService emojiSearchService,
-        ISpaceEmojiCreateService spaceEmojiCreateService
+        ISpaceEmojiCreateService spaceEmojiCreateService,
+        IPermissionRequestService permissionRequestService
     )
     {
         _logger = logger;
@@ -37,17 +39,19 @@ public class WebhookHandler : SpaceWebHookHandler
         _chatMessageService = chatMessageService;
         _emojiSearchService = emojiSearchService;
         _spaceEmojiCreateService = spaceEmojiCreateService;
+        _permissionRequestService = permissionRequestService;
     }
 
-    public override Task<ApplicationExecutionResult> HandleInitAsync(InitPayload payload)
+    public override async Task<ApplicationExecutionResult> HandleInitAsync(InitPayload payload)
     {
         _logger.LogInformation($"Received {nameof(InitPayload)} event for client-id '{payload.ClientId}'");
-        _appInstallationStore.RegisterAppInstallationAsync(new AppInstallation(
+        await _appInstallationStore.RegisterAppInstallationAsync(new AppInstallation(
             payload.ServerUrl,
             payload.ClientId,
             payload.ClientSecret
         ));
-        return base.HandleInitAsync(payload);
+        await _permissionRequestService.RequestPermissionsAsync(payload.ClientId);
+        return await base.HandleInitAsync(payload);
     }
 
     public override async Task<Commands> HandleListCommandsAsync(ListCommandsPayload payload) =>
@@ -131,6 +135,10 @@ public class WebhookHandler : SpaceWebHookHandler
                 await GetEmojisAsync(payload.ClientId, payload.UserId, new SearchRequest(searchRequest.Query, searchRequest.PageNumber + 1));
                 break;
 
+            case EmojiActions.AskPermissionsActionId:
+                await _permissionRequestService.RequestPermissionsAsync(payload.ClientId);
+                break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(payload.ActionId), payload.ActionId, null);
         }
@@ -150,6 +158,9 @@ public class WebhookHandler : SpaceWebHookHandler
                     payload.UserId,
                     $"Sorry! an emoji by the name of `${emoji.Name}` already exists {SpaceBuiltinEmojis.Conflict}"
                 );
+                break;
+            case AddEmojiResult.NoPermissions:
+                await _chatMessageService.SendRequestPermissionsMessageAsync(payload.ClientId, payload.UserId);
                 break;
             case AddEmojiResult.Failed:
                 await _chatMessageService.SendErrorMessageAsync(payload.ClientId, payload.UserId);

@@ -45,6 +45,24 @@ public class ChatMessageService : IChatMessageService
         );
     }
 
+    public async Task SendRequestPermissionsMessageAsync(string clientId, string recipientUserId)
+    {
+        await SendMessageAsync(
+            clientId,
+            recipientUserId,
+            BlockMessage(
+                MessageSectionElement.MessageSection(
+                    elements: new List<MessageBlockElement>
+                    {
+                        new MessageText($"Unfortunately, getEmoji did not get the required permissions to perform the operation {SpaceBuiltinEmojis.Sad}"),
+                        GetButton("Resubmit request", EmojiActions.AskPermissionsActionId, string.Empty)
+                    },
+                    style: MessageStyle.SECONDARY
+                )
+            )
+        );
+    }
+
     public async Task SendNoResultsAsync(string clientId, string recipientUserId, string query)
     {
         _logger.LogInformation($"Found no results for client-id '{clientId}' and user '{recipientUserId}' for query '{query}'");
@@ -160,26 +178,20 @@ public class ChatMessageService : IChatMessageService
             $"`:{emoji.Name}:`",
             new MessageImage(emoji.Url)
         );
-        yield return MessageBlockElement.MessageControlGroup(
-            new List<MessageControlElement>
-            {
-                MessageControlElement.MessageButton(
-                    "Add to Space",
-                    MessageButtonStyle.PRIMARY,
-                    MessageAction.Post(EmojiActions.AddEmojiActionId, emoji.ToJson())
-                )
-            }
-        );
+        yield return GetButton("Add to Space", EmojiActions.AddEmojiActionId, emoji);
     }
 
     private static MessageBlockElement GetMoreButton(SearchRequest searchRequest) =>
+        GetButton("Get more", EmojiActions.GetMoreActionId, searchRequest);
+
+    private static MessageBlockElement GetButton<T>(string text, string actionId, T payload) =>
         MessageBlockElement.MessageControlGroup(
             new List<MessageControlElement>
             {
                 MessageControlElement.MessageButton(
-                    "Get more",
+                    text,
                     MessageButtonStyle.PRIMARY,
-                    MessageAction.Post(EmojiActions.GetMoreActionId, searchRequest.ToJson())
+                    MessageAction.Post(actionId, payload.ToJson())
                 )
             }
         );

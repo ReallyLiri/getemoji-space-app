@@ -5,7 +5,7 @@ using GetEmoji.Handlers;
 var app = WebApplication.CreateBuilder(args)
     .RegisterServices()
     .Build();
-app.MapSpaceWebHookHandler<WebhookHandler>("/api/space/receive");
+app.MapSpaceWebHookHandler<WebhookHandler>("/api/space");
 app.MapGet("/", () => "getEmoji app is running 😋");
 
 await using (var scope = app.Services.CreateAsyncScope())

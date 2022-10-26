@@ -1,5 +1,6 @@
 using GetEmoji.Extensions;
 using GetEmoji.Models;
+using JetBrains.Space.Common;
 
 namespace GetEmoji.Services.Space;
 
@@ -45,6 +46,11 @@ public class SpaceEmojiCreateService : ISpaceEmojiCreateService
             _logger.LogInformation($"Created attachment '{attachmentId}' from emoji '{emoji}'");
             await emojiClient.AddEmojiAsync(emoji.Name, attachmentId);
             return AddEmojiResult.Added;
+        }
+        catch (PermissionDeniedException permissionDeniedException)
+        {
+            _logger.LogInformation(permissionDeniedException, "No permissions");
+            return AddEmojiResult.NoPermissions;
         }
         catch (Exception exception)
         {
