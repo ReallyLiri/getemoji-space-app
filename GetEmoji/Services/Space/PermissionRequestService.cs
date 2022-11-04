@@ -21,5 +21,9 @@ public class PermissionRequestService : IPermissionRequestService
             PermissionContextIdentifier.Global,
             _requestedPermissions
         );
+        await applicationClient.SetUiExtensionsAsync(PermissionContextIdentifier.Global, new List<AppUiExtensionIn>
+        {
+            new ChatBotUiExtensionIn()
+        });
     }
 }
