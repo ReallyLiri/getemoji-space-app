@@ -67,5 +67,6 @@ public class SpaceEmojiCreateService : ISpaceEmojiCreateService
         return await uploadClient.UploadImageAsync(UploadMediaPrefix, GetFileName(emoji), contentStream);
     }
 
-    private string GetFileName(EmojiDescriptor emoji) => emoji.Url.Split('/').Last().Split('?').First();
+    private static string GetFileName(EmojiDescriptor emoji)
+        => emoji.Url.Split('/').Last().Split('?').First();
 }

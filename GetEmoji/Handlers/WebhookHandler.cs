@@ -166,6 +166,7 @@ public class WebhookHandler : SpaceWebHookHandler
                 await _chatMessageService.SendErrorMessageAsync(payload.ClientId, payload.UserId);
                 break;
             case AddEmojiResult.Added:
+                await Task.Delay(TimeSpan.FromSeconds(2)); // Sleeping to Space some time so emoji can be used in chat
                 await _chatMessageService.SendEmojiCreatedAsync(payload.ClientId, payload.UserId, emoji);
                 await _chatMessageService.RemoveButtonFromMessageAsync(payload.ClientId, payload.Message);
                 break;

@@ -16,14 +16,16 @@ public class PermissionRequestService : IPermissionRequestService
     public async Task RequestPermissionsAsync(string clientId)
     {
         var applicationClient = await _spaceClientProvider.GetApplicationClientAsync(clientId);
-        await applicationClient.Authorizations.AuthorizedRights.RequestRightsAsync(
-            ApplicationIdentifier.Me,
-            PermissionContextIdentifier.Global,
-            _requestedPermissions
+        await Task.WhenAll(
+            applicationClient.Authorizations.AuthorizedRights.RequestRightsAsync(
+                ApplicationIdentifier.Me,
+                PermissionContextIdentifier.Global,
+                _requestedPermissions
+            ),
+            applicationClient.SetUiExtensionsAsync(PermissionContextIdentifier.Global, new List<AppUiExtensionIn>
+            {
+                new ChatBotUiExtensionIn()
+            })
         );
-        await applicationClient.SetUiExtensionsAsync(PermissionContextIdentifier.Global, new List<AppUiExtensionIn>
-        {
-            new ChatBotUiExtensionIn()
-        });
     }
 }

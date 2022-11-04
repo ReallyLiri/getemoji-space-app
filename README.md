@@ -49,5 +49,9 @@ docker run --restart unless-stopped -d \
 
 ```sh
 docker build -t getemoji .
-docker run --rm -it -e PORT=5000 -p 5000:5000 --name getemoji getemoji
+docker run --rm -it \
+  -e PORT=5000 \
+  -e CONNECTION_STRING='host=localhost;port=5432;database=getemoji;username=getemoji;password=getemoji' \
+  -p 5000:5000 \
+  --name getemoji getemoji
 ```

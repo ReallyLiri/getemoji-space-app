@@ -36,7 +36,7 @@ public class SlackmojisParser : ISlackmojisParser
 
     private static IEnumerable<EmojiDescriptor> ParseImgNodes(HtmlNodeCollection nodes) =>
         nodes?.Select(node => new EmojiDescriptor(
-            node.Attributes["title"].Value.Replace(" ", "-"),
+            EmojiNameSanitizer.SanitizeName(node.Attributes["title"].Value),
             node.Attributes["src"].Value
         )) ?? Enumerable.Empty<EmojiDescriptor>();
 }
